@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+}
+
+#content {
+    width:95%;
+    margin: auto;
+    max-width:960px;
+    border: solid grey 2px;
+    position: absolute;
+    top: 0; bottom: 0; right: 0; left: 0;
+}
+
+canvas {
+    height:100%;
+    width:100%;
+}
