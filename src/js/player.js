@@ -5,6 +5,7 @@ define(function(require) {
     rotation = 0;
     speed = 500;
     var Player = function(playerName) {
+        console.log("New player");
         name = playerName;
         gameEvents.on('update', this.update, this);
         gameEvents.on('render', this.render, this);
@@ -15,6 +16,7 @@ define(function(require) {
             y += ((Math.random() * speed) -speed/2) * dt;
         },
         render: function(context) {
+            console.log("Rendering");
             context.fillStyle = "#fa3da8";
             context.fillRect(x - 12.5, y - 12.5, 25, 25);
         }
