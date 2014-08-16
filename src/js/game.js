@@ -10,12 +10,14 @@ define(function(require) {
     canvas = document.getElementById('gameCanvas'),
     context = canvas.getContext('2d'),
     Player = require('player'),
+    Wind = require('wind'),
     Events = require('minivents.min');
 
     window.gameEvents = new Events();
     var player = new Player(),
-    timeNow = Date.now(),
-    lastUpdateTime = Date.now();
+        wind = new Wind(),
+        timeNow = Date.now(),
+        lastUpdateTime = Date.now();
 
     function animLoop() {
         requestAnimFrame(animLoop);
@@ -27,7 +29,7 @@ define(function(require) {
         timeNow = Date.now();
         var dt = timeNow - lastUpdateTime;
         lastUpdateTime = timeNow;
-        gameEvents.emit("update", dt / 1000);
+        gameEvents.emit("update", dt / 1000, wind.getVector());
     }
 
     var stageX = 0, stageY = 0;

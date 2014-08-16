@@ -5,9 +5,9 @@ define(function (require) {
         contentDiv.setAttribute("style","height:" + newHeight + "px;");
         contentDiv.style.height = newHeight + 'px';
         window.scale = 960 / contentDiv.clientWidth;
-        window.TWO_PI = Math.PI * 2;
     }
     window.onresize = resizeCanvas;
     resizeCanvas();
+    window.TWO_PI = Math.PI * 2;
     require('game');
 });

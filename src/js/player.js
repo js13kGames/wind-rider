@@ -15,21 +15,28 @@ define(function(require) {
 
     function onPress(pressX, pressY) {
         var angleToPress = Math.atan2(pressY - position.y, pressX - position.x);
-        /*acceleration = Vector.fromPolar(speed, angleToPress);
-        acceleration.normalise();*/
         velocity = Vector.fromPolar(speed, angleToPress);
     }
 
     Player.prototype = {
-        update: function(dt) {
+        update: function(dt, windVector) {
             velocity.add(acceleration);
+            velocity.scale(0.95);
+            velocity.add(windVector.getScaled(dt));
+            velocity.limit(10);
             position.add(velocity);
             rotation = velocity.getAngle();
-            if (position.y < 540) {
-                velocity.add(gravity.getScaled(dt));
-            } else {
+            if (position.y > 540) {
+                position.y = 0;
+            }
+            if (position.y < 0) {
                 position.y = 540;
-                velocity.scale(0.95);
+            }
+            if (position.x < 0) {
+                position.x = 960;
+            }
+            if (position.x > 960) {
+                position.x = 0;
             }
 
         },

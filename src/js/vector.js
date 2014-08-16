@@ -27,13 +27,17 @@ define(function(require) {
             this.x /= biggest;
             this.y /= biggest;
         },
+        limit: function(limit) {
+            this.x = Math.min(limit, Math.max(-limit, this.x));
+            this.y = Math.min(limit, Math.max(-limit, this.y));
+        },
 		getDist: function(vector) {
 			var xDist = Math.abs(this.x - vector.x),
 				yDist = Math.abs(this.y - vector.y);
 			return pythag(xDist, yDist);
 		},
 		getAngle: function() {
-			return Math.atan(this.y / this.x);
+			return Math.atan2(this.y, this.x);
 		},
         getScaled: function(scalar) {
             return new Vector(this.x * scalar, this.y * scalar);
