@@ -15,4 +15,8 @@ body {
 canvas {
     height:100%;
     width:100%;
+    -webkit-tap-highlight-color: transparent;
+    -ms-touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 }

@@ -30,9 +30,22 @@ define(function(require) {
         gameEvents.emit("update", dt / 1000);
     }
 
+    var stageX = 0, stageY = 0;
+
     function render() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         gameEvents.emit("render", context);
+    }
+
+    canvas.addEventListener('mousedown', onCanvasPress);
+    canvas.addEventListener('touchstart', onCanvasPress);
+
+    function onCanvasPress(event) {
+        // debugger
+        var contentDiv = document.getElementById('content');
+        stageX = Math.round((event.pageX - contentDiv.offsetLeft - contentDiv.clientLeft) * scale);
+        stageY = Math.round((event.pageY - contentDiv.offsetTop - contentDiv.clientTop) * scale);
+        gameEvents.emit('press', stageX, stageY);
     }
 
     animLoop();

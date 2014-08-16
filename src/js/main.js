@@ -4,6 +4,8 @@ define(function (require) {
         var newHeight = contentDiv.clientWidth * 0.5625;
         contentDiv.setAttribute("style","height:" + newHeight + "px;");
         contentDiv.style.height = newHeight + 'px';
+        window.scale = 960 / contentDiv.clientWidth;
+        window.TWO_PI = Math.PI * 2;
     }
     window.onresize = resizeCanvas;
     resizeCanvas();
