@@ -3,10 +3,9 @@ define(function(require) {
         position = new Vector(480, 270),
         velocity = new Vector(0, 0),
         acceleration = new Vector(0, 0),
-        gravity = new Vector(0, 2),
-        rotation = Math.PI * 2,
+        gravity = new Vector(0, 1),
         speed = 3,
-        respondingToPress = false,
+        radius = 25,
         Player = function(playerName) {
             gameEvents.on('update', this.update, this);
             gameEvents.on('render', this.render, this);
@@ -25,7 +24,6 @@ define(function(require) {
             velocity.add(windVector.getScaled(dt));
             velocity.limit(10);
             position.add(velocity);
-            rotation = velocity.getAngle();
             if (position.y > 540) {
                 position.y = 0;
             }
@@ -43,9 +41,9 @@ define(function(require) {
         render: function(context) {
             context.save();
             context.translate(position.x, position.y);
-            context.rotate(rotation);
             context.fillStyle = "#fa3da8";
-            context.fillRect(-25, -12.5, 50, 25);
+            context.arc(0, 0, radius, 0, 2 * Math.PI, false);
+            context.fill();
             context.restore();
         }
     };
