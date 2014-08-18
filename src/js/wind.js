@@ -1,48 +1,50 @@
 define(function(require) {
-    var Vector = require('vector'),
-        windVector = new Vector(0, 0),
-        angle = 0,
-        speed = 0,
-        time = 0,
-        size = 12,
-        xScale = 0,
+    var Vector = require('vector');
         Wind = function() {
+            this.windVector = new Vector(0, 0);
+            this.angle = 0;
+            this.speed = 0;
+            this.size = 12;
+            this.xScale = 0;
             gameEvents.on('update', this.update, this);
             gameEvents.on('render', this.render, this);
         };
     Wind.prototype = {
         update: function(dt) {
-            time += dt;
             xChange = (1 - Math.random() * 2);
             yChange = (1 - Math.random() * 2);
-            windVector.add(new Vector(xChange, yChange));
-            windVector.limit(10);
-            speed = windVector.mag();
-            xScale = speed / 10;
-            angle = windVector.getAngle();
+            this.windVector.add(new Vector(xChange, yChange));
+            this.windVector.limit(10);
+            this.speed = this.windVector.mag();
+            this.xScale = this.speed / 10;
+            this.angle = this.windVector.getAngle();
         },
         render: function(ctx) {
             ctx.font="20pt Arial";
             ctx.fillStyle="#000000";
-            ctx.fillText(Math.round(speed), 840, 50);
+            ctx.fillText(Math.round(this.speed), 840, 50);
             ctx.save();
             ctx.translate(840, 50);
-            ctx.rotate(angle);
-            ctx.beginPath();
-            ctx.moveTo(0, -size / 2);
-            ctx.lineTo(size * xScale, -size / 2);
-            ctx.lineTo(size * xScale, -size);
-            ctx.lineTo(size * 2 * xScale, 0);
-            ctx.lineTo(size * xScale, size);
-            ctx.lineTo(size * xScale, size/2);
-            ctx.lineTo(0, size/2);
-            ctx.closePath();
+            ctx.rotate(this.angle);
             ctx.fillStyle="#ff0000";
+            ctx.beginPath();
+            ctx.moveTo(0, -this.size / 2);
+            ctx.lineTo(this.size * this.xScale, -this.size / 2);
+            ctx.lineTo(this.size * this.xScale, -this.size);
+            ctx.lineTo(this.size * 2 * this.xScale, 0);
+            ctx.lineTo(this.size * this.xScale, this.size);
+            ctx.lineTo(this.size * this.xScale, this.size/2);
+            ctx.lineTo(0, this.size/2);
+            ctx.closePath();
             ctx.fill();
             ctx.restore();
         },
+        destroy: function() {
+            gameEvents.off('update', this.update, this);
+            gameEvents.off('render', this.render, this);
+        },
         getVector: function() {
-            return windVector;
+            return this.windVector;
         }
     };
     return Wind;
