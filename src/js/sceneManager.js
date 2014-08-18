@@ -124,6 +124,24 @@ define(function(require){
         function render() {
             context.clearRect(0, 0, canvas.width, canvas.height);
             gameEvents.emit("render", context);
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            for (var y = 0; y < imageData.height; y++) {
+                for (var x = 0; x < imageData.width; x++) {
+                    var coords = new Vector(x, y);
+                    var distanceToMiddle = coords.getDist(new Vector(480, 270));
+                    var value = (distanceToMiddle / 550.7267925205746) * 255;
+                    setPixel(imageData, x, y, 255, 255, 255, value);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }
+
+        function setPixel(imageData, x, y, r, g, b, a) {
+            var index = (x + y * imageData.width) * 4;
+            imageData.data[index+0] = r;
+            imageData.data[index+1] = g;
+            imageData.data[index+2] = b;
+            imageData.data[index+3] = a;
         }
 
         clickListener = function(event) {
