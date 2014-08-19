@@ -70,8 +70,10 @@ define(function(require){
     function GameScene() {
         var Player = require('player'),
             Wind = require('wind'),
+            Rain = require('rain'),
             player = new Player(),
             wind = new Wind(),
+            rain = new Rain(),
             timeNow = Date.now(),
             lastUpdateTime = Date.now(),
             paused = false,
