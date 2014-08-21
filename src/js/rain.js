@@ -1,18 +1,20 @@
 define(function(require){
     var Vector = require('vector');
-    var gravity = new Vector(0, 1);
-    var Raindrop = function(x, y, rainIndex) {
-        this.velocity = new Vector(0, 1);
-        this.position = new Vector(x, y);
-        this.rainIndex = rainIndex;
+    var Raindrop = function(x, y) {
+        gameEvents.emit('registerPhysics', this, x, y, {velocity: new Vector(Math.random() * 2 - 1, 15)});
+        gameEvents.emit('registerCollider', this);
+        this.age = 0;
     };
     Raindrop.prototype = {
-        update: function(dt, windVector) {
-            this.velocity.add(windVector.getScaled(dt));
-            this.velocity.add(gravity);
-            this.position.add(this.velocity);
+        update: function(dt) {
+            this.age += dt;
+            if (this.age > 5) {
+                gameEvents.emit('destroy', this);
+                return;
+            }
             if (this.position.y > 540 && !this.destroyed) {
-                gameEvents.emit('destroyRain', this);
+                gameEvents.emit('destroy', this);
+                return;
             }
             if (this.position.x > 960) {
                 this.position.x = 0;
@@ -32,22 +34,20 @@ define(function(require){
     };
     var Rain = function() {
         this.drops = [];
-        this.rainIndex = 0;
         gameEvents.on('update', this.update, this);
         gameEvents.on('render', this.render, this);
-        gameEvents.on('destroyRain', this.destroyRain, this);
+        gameEvents.on('destroy', this.destroyRain, this);
     };
 
     Rain.prototype = {
         update: function(dt, windspeed) {
             var rainPerSecond = 1;
-            if (Math.random() > 0.1) {
-                this.drops.push(new Raindrop(Math.random() * 960, -10, this.rainIndex));
+            if (Math.random() > 0.3) {
+                this.drops.push(new Raindrop(Math.random() * 960, -25));
             }
             for (var i = 0; i < this.drops.length; i++) {
-                this.drops[i].update(dt, windspeed);
+                this.drops[i].update(dt);
             }
-            console.log(this.drops.length);
         },
         render: function(ctx) {
             for (var i = 0; i < this.drops.length; i++) {
@@ -55,7 +55,10 @@ define(function(require){
             }
         },
         destroyRain: function(drop) {
-            this.drops.splice(this.drops.indexOf(drop), 1);
+            var dropIndex = this.drops.indexOf(drop);
+            if (dropIndex > -1) {
+                this.drops.splice(this.drops.indexOf(drop), 1);
+            }
         }
     };
 

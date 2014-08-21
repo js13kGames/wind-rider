@@ -3,5 +3,6 @@ define(function(require) {
 
     window.gameEvents = new Events();
     window.SceneManager = require('sceneManager');
+    window.debug = false;
     SceneManager.loadScene('intro');
 });

@@ -18,6 +18,7 @@ define(function(require){
         canvas.removeEventListener('mousedown', clickListener);
         canvas.removeEventListener('touchstart', clickListener);
         document.removeEventListener('keydown', keyListener);
+        gameEvents.off();
         switch (type) {
             case 'game':
                 scene = new GameScene();
@@ -68,12 +69,10 @@ define(function(require){
         };
     }
     function GameScene() {
-        var Player = require('player'),
-            Wind = require('wind'),
-            Rain = require('rain'),
-            player = new Player(),
-            wind = new Wind(),
-            rain = new Rain(),
+        var physics = new (require('physics'))(),
+            player = new (require('player'))(),
+            wind = new (require('wind'))(),
+            rain = new (require('rain'))(),
             timeNow = Date.now(),
             lastUpdateTime = Date.now(),
             paused = false,
