@@ -27,7 +27,6 @@ define(function(require){
             ctx.rotate(this.velocity.getAngle());
             ctx.fillStyle = "#0000ff";
             ctx.fillRect(0, 0, 25, 2);
-            ctx.fill();
             ctx.restore();
         }
     };

@@ -124,7 +124,7 @@ define(function(require){
         var stageX = 0, stageY = 0;
 
         function render() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.width = canvas.width;
             gameEvents.emit("render", context);
         }
 
