@@ -44,8 +44,8 @@ define(function(require) {
         updatePhysics: function(object, windVector) {
             var wind = new Vector(windVector.x, windVector.y);
             wind.scale(0.005);
-            object.acceleration.add(gravity);
-            object.acceleration.add(wind);
+            if (debug.gravity) object.acceleration.add(gravity);
+            if (debug.wind) object.acceleration.add(wind);
             object.velocity.add(object.acceleration);
             object.acceleration = new Vector(0, 0);
             object.velocity.limit(15);

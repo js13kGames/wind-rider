@@ -42,7 +42,7 @@ define(function(require){
     Rain.prototype = {
         update: function(dt, windspeed) {
             var rainPerSecond = 1;
-            if (Math.random() > 0.3) {
+            if (Math.random() > 0.3 && debug.rain) {
                 this.drops.push(new Raindrop(Math.random() * 960, -25));
             }
             for (var i = 0; i < this.drops.length; i++) {

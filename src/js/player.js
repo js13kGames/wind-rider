@@ -14,7 +14,7 @@ define(function(require) {
 
     Player.prototype = {
         update: function(dt, windVector) {
-            if (debug) {
+            if (!debug.death) {
                 if (this.position.y > 540) {
                     this.position.y = 0;
                 } else if (this.position.y < 0) {
