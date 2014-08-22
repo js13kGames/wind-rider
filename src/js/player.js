@@ -11,7 +11,22 @@ define(function(require) {
             gameEvents.on('render', this.render, this);
             gameEvents.on('press', this.onPress, this);
         };
-
+    function drawWing(ctx, xoff, yoff, rotation, scale) {
+        ctx.save();
+        ctx.translate(xoff, yoff);
+        ctx.rotate(rotation);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-6 * scale, -14 * scale, 34 * scale, 95 * scale, 59 * scale, 124 * scale);
+        ctx.bezierCurveTo(88 * scale, 158 * scale, 147 * scale, 134 * scale, 157 * scale, 121 * scale);
+        ctx.bezierCurveTo(167 * scale, 108 * scale, 195 * scale, 79 * scale, 156 * scale, 37 * scale);
+        ctx.bezierCurveTo(139 * scale, 19 * scale, 15 * scale, -3 * scale, 0, 0);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+    }
     Player.prototype = {
         update: function(dt, windVector) {
             if (!debug.death) {
@@ -38,6 +53,8 @@ define(function(require) {
             context.fillStyle = "#fa3da8";
             context.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
             context.fill();
+            drawWing(context, -7, -25, Math.PI, 0.15);
+            drawWing(context, -5, -25, Math.PI + Math.PI / 5 , 0.15);
             context.restore();
         },
         onPress: function(pressX, pressY) {
