@@ -1,6 +1,6 @@
 define(function(require) {
     var Vector = require('vector');
-    var gravity = new Vector(0, 0.0);
+    var gravity = new Vector(0, 0.05);
     var Physics = function() {
         this.physicsObjects = [];
         this.colliders = [];
@@ -43,7 +43,7 @@ define(function(require) {
         },
         updatePhysics: function(object, windVector) {
             var wind = new Vector(windVector.x, windVector.y);
-            wind.scale(0.0);
+            wind.scale(0.005);
             object.acceleration.add(gravity);
             object.acceleration.add(wind);
             object.velocity.add(object.acceleration);

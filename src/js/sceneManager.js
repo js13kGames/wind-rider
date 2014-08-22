@@ -9,14 +9,21 @@ define(function(require){
     })(),
     canvas = document.getElementById('gameCanvas'),
     context = canvas.getContext('2d'),
-    clickListener = null,
+    clickListener = function(event) {
+        // debugger
+        var contentDiv = document.getElementById('content');
+        stageX = Math.round((event.pageX - contentDiv.offsetLeft - contentDiv.clientLeft) * scale);
+        stageY = Math.round((event.pageY - contentDiv.offsetTop - contentDiv.clientTop) * scale);
+        gameEvents.emit('press', stageX, stageY);
+    },
     keyListener = null,
     scene = null;
 
+    canvas.addEventListener('mousedown', clickListener);
+    canvas.addEventListener('touchstart', clickListener);
+
     function loadScene(type, time) {
         canvas.width = canvas.width;
-        canvas.removeEventListener('mousedown', clickListener);
-        canvas.removeEventListener('touchstart', clickListener);
         document.removeEventListener('keydown', keyListener);
         gameEvents.off();
         switch (type) {
@@ -30,8 +37,6 @@ define(function(require){
                 scene = new GameOverScene(time);
                 break;
         }
-        canvas.addEventListener('mousedown', clickListener);
-        canvas.addEventListener('touchstart', clickListener);
         document.addEventListener('keydown', keyListener);
         window.scene = scene;
     }
@@ -40,33 +45,56 @@ define(function(require){
         context.fillStyle = "#fa3da8";
         context.arc(480, 270, 25, 0, 2 * Math.PI, false);
         context.fill();
-        context.font = "72px Helvetica, sans-serif";
-        context.fillStyle = "#000000";
-        context.textAlign = 'center';
-        context.textBaseLine = 'middle';
-        context.fillText("Game title", 480, 270);
-        context.font = "20px Helvetica, sans-serif";
-        context.fillText("Click to start", 480, 320);
-
-        clickListener = function(event) {
-            loadScene('game');
-        };
+        context.save();
+        context.rotate(Math.random() * Math.PI / 20);
+        context.font = "72px Courier New, Courier";
+        context.fillStyle = "#fff";
+        context.textAlign = 'left';
+        context.textBaseLine = 'top';
+        context.fillText("Bee's journey", 50, 100);
+        context.restore();
+        context.fillStyle = "#555";
+        context.fillRect(645, 480, 265, 30);
+        context.fillStyle = "#fff";
+        context.font = "20px Courier New, Courier";
+        context.textAlign = 'right';
+        context.textBaseLine = 'bottom';
+        context.fillText("Tap here to get home", 900, 500);
+        gameEvents.on('press', function(pressX, pressY) {
+            if (pressX >= 645 && pressX <= 910 && pressY >= 480 && pressY <= 510) {
+                loadScene('game');
+            }
+        });
     }
 
     function GameOverScene(time) {
         context.fillStyle = "#fa3da8";
         context.arc(480, 270, 25, 0, 2 * Math.PI, false);
         context.fill();
-        context.font = "72px Helvetica, sans-serif";
-        context.fillStyle = "#000000";
+        context.save();
+        context.translate(480, 270);
+        context.rotate((Math.random() * 2 - 1) * Math.PI / 20);
+        context.font = "72px Courier New, Courier";
+        context.fillStyle = "#fff";
         context.textAlign = 'center';
         context.textBaseLine = 'middle';
-        context.fillText("Game over", 480, 270);
-        context.font = "20px Helvetica, sans-serif";
-        context.fillText("You lasted " + time + " seconds.", 480, 320);
-        clickListener = function(event) {
-            loadScene('game');
-        };
+        context.fillText("Game over", 0, 0);
+        context.restore();
+        context.fillStyle = "#000000";
+        context.font = "20px Courier New, Courier";
+        context.fillText("You lasted " + time + " second" + (time > 1 ? "s" : "") + ".", 480, 320);
+        context.fillStyle = "#555";
+        context.fillRect(645, 480, 265, 30);
+        context.fillStyle = "#fff";
+        context.font = "20px Courier New, Courier";
+        context.textAlign = 'right';
+        context.textBaseLine = 'bottom';
+        context.fillText("Tap here to get home", 900, 500);
+        gameEvents.on('press', function(pressX, pressY) {
+            if (pressX >= 645 && pressX <= 910 && pressY >= 480 && pressY <= 510) {
+                loadScene('game');
+            }
+        });
     }
     function GameScene() {
         var physics = new (require('physics'))(),
@@ -134,14 +162,6 @@ define(function(require){
             imageData.data[index+2] = b;
             imageData.data[index+3] = a;
         }
-
-        clickListener = function(event) {
-            // debugger
-            var contentDiv = document.getElementById('content');
-            stageX = Math.round((event.pageX - contentDiv.offsetLeft - contentDiv.clientLeft) * scale);
-            stageY = Math.round((event.pageY - contentDiv.offsetTop - contentDiv.clientTop) * scale);
-            gameEvents.emit('press', stageX, stageY);
-        };
 
         keyListener = function(event) {
             if (event.which === 27) {
