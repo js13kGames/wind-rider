@@ -7,18 +7,19 @@ define(function(require){
                 window.setTimeout(callback, 1000 / 60);
             };
     })(),
-    canvas = document.getElementById('gameCanvas'),
-    context = canvas.getContext('2d'),
     clickListener = function(event) {
         // debugger
         var contentDiv = document.getElementById('content');
         stageX = Math.round((event.pageX - contentDiv.offsetLeft - contentDiv.clientLeft) * scale);
         stageY = Math.round((event.pageY - contentDiv.offsetTop - contentDiv.clientTop) * scale);
-        gameEvents.emit('press', stageX, stageY);
+        gameEvents.emit('press', new Vector(stageX, stageY));
     },
     keyListener = null,
-    scene = null;
+    scene = null,
+    strength = 5;
 
+    window.canvas = document.getElementById('gameCanvas');
+    window.context = canvas.getContext('2d');
     canvas.addEventListener('mousedown', clickListener);
     canvas.addEventListener('touchstart', clickListener);
 
@@ -40,6 +41,11 @@ define(function(require){
         document.addEventListener('keydown', keyListener);
         window.scene = scene;
     }
+    function checkStart(press) {
+        if (press.x >= 645 && press.x <= 910 && press.y >= 480 && press.y <= 510) {
+            loadScene('game');
+        }
+    }
 
     function IntroScene() {
         context.fillStyle = "#fa3da8";
@@ -60,11 +66,7 @@ define(function(require){
         context.textAlign = 'right';
         context.textBaseLine = 'bottom';
         context.fillText("Tap here to get home", 900, 500);
-        gameEvents.on('press', function(pressX, pressY) {
-            if (pressX >= 645 && pressX <= 910 && pressY >= 480 && pressY <= 510) {
-                loadScene('game');
-            }
-        });
+        gameEvents.on('press', checkStart);
     }
 
     function GameOverScene(time) {
@@ -90,23 +92,25 @@ define(function(require){
         context.textAlign = 'right';
         context.textBaseLine = 'bottom';
         context.fillText("Tap here to get home", 900, 500);
-        gameEvents.on('press', function(pressX, pressY) {
-            if (pressX >= 645 && pressX <= 910 && pressY >= 480 && pressY <= 510) {
-                loadScene('game');
-            }
-        });
+        gameEvents.on('press', checkStart);
     }
     function GameScene() {
         var physics = new (require('physics'))(),
-            player = new (require('player'))(),
+            player = new (require('player'))(strength),
             wind = new (require('wind'))(),
             rain = new (require('rain'))(),
             timeNow = Date.now(),
             lastUpdateTime = Date.now(),
             paused = false,
-            gameOver = false;
+            gameOver = false,
+            Repeller = require('repeller');
 
         gameEvents.on('gameover', endGame);
+        gameEvents.on('press', createRepeller);
+
+        function createRepeller(press) {
+            new Repeller(press, strength);
+        }
 
         function endGame() {
             gameOver = true;

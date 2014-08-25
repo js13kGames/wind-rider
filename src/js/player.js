@@ -1,11 +1,12 @@
 define(function(require) {
     var Vector = require('vector'),
         gravity = new Vector(0, 0.1);
-        Player = function(playerName) {
+        Player = function(strength) {
             gameEvents.emit('registerPlayer', this);
             gameEvents.emit('registerPhysics', this, 480, 270);
-            this.speed = 3;
+            this.speed = strength;
             this.radius = 25;
+            this.flip = false;
             bornTime = Date.now();
             gameEvents.on('update', this.update, this);
             gameEvents.on('render', this.render, this);
@@ -27,21 +28,44 @@ define(function(require) {
         ctx.stroke();
         ctx.restore();
     }
+    function drawBody(ctx, x, y, radius) {
+        var grd = ctx.createLinearGradient(-radius, 0, radius, 0),
+            yellow = ['rgba(255, 255, 0, 1.000)'],
+            black = 'rgba(0, 0, 0, 1.000)';
+        grd.addColorStop(0.217, yellow);
+        grd.addColorStop(0.247, black);
+        grd.addColorStop(0.488, black);
+        grd.addColorStop(0.508, yellow);
+        grd.addColorStop(0.724, yellow);
+        grd.addColorStop(0.746, black);
+        grd.addColorStop(1.000, black);
+
+        ctx.fillStyle = grd;
+        ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+    }
     Player.prototype = {
         update: function(dt, windVector) {
+            this.flip = this.velocity.x > 0;
+            var edge = {
+                top: -this.radius,
+                bottom: canvas.height + this.radius,
+                left: -this.radius,
+                right: canvas.width + this.radius
+            };
             if (!debug.death) {
-                if (this.position.y > 540) {
-                    this.position.y = 0;
-                } else if (this.position.y < 0) {
-                    this.position.y = 540;
+                if (this.position.y > edge.bottom) {
+                    this.position.y = edge.top;
+                } else if (this.position.y < edge.top) {
+                    this.position.y = edge.bottom;
                 }
-                if (this.position.x > 960) {
-                    this.position.x = 0;
-                } else if (this.position.x < 0) {
-                    this.position.x = 960;
+                if (this.position.x > edge.right) {
+                    this.position.x = edge.left;
+                } else if (this.position.x < edge.left) {
+                    this.position.x = edge.right;
                 }
             } else {
-                if (this.position.y > 540 || this.position.y < 0 || this.position.x < 0 || this.position.x > 960) {
+                if (this.position.y > edge.bottom || this.position.y < edge.top || this.position.x < edge.left || this.position.x > edge.right) {
                     gameEvents.emit('gameover');
                 }
             }
@@ -50,16 +74,22 @@ define(function(require) {
         render: function(context) {
             context.save();
             context.translate(this.position.x, this.position.y);
-            context.fillStyle = "#fa3da8";
-            context.arc(0, 0, this.radius, 0, 2 * Math.PI, false);
-            context.fill();
+            if (this.flip) {
+                context.scale(1, 1);
+            } else {
+                context.scale(-1, 1);
+            }
+            drawBody(context, 0, 0, this.radius);
             drawWing(context, -7, -25, Math.PI, 0.15);
             drawWing(context, -5, -25, Math.PI + Math.PI / 5 , 0.15);
             context.restore();
         },
-        onPress: function(pressX, pressY) {
-            var angleToPress = Math.atan2(pressY - this.position.y, pressX - this.position.x);
-            this.acceleration = Vector.fromPolar(this.speed, angleToPress);
+        onPress: function(press) {
+            var angleToPress = Math.atan2(press.y - this.position.y, press.x - this.position.x);
+            var dist = Vector.dist(press, this.position);
+            var effect = Math.max(0, (1 - dist / (canvas.height / 2)) * this.speed);
+            this.acceleration = Vector.fromPolar(effect, angleToPress);
+            this.acceleration.scale(-1);
         },
         getLifeSpan: function() {
             return Math.round((Date.now() - bornTime) / 1000);
