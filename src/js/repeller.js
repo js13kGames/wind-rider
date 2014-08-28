@@ -8,8 +8,8 @@ define(function(require) {
         gameEvents.on('render', this.render, this);
     };
     Repeller.prototype = {
-        update: function(dt) {
-            this.radius += 2500 * dt;
+        update: function(data) {
+            this.radius += 2500 * data.dt;
             if (this.radius > canvas.height / 2) {
                 this.destroy();
             }

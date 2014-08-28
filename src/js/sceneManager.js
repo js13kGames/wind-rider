@@ -97,8 +97,9 @@ define(function(require){
     function GameScene() {
         var physics = new (require('physics'))(),
             player = new (require('player'))(strength),
-            wind = new (require('wind'))(),
-            rain = new (require('rain'))(),
+            difficulty = 0,
+            wind = new (require('wind'))(difficulty),
+            rain = new (require('rain'))(difficulty),
             timeNow = Date.now(),
             lastUpdateTime = Date.now(),
             paused = false,
@@ -147,9 +148,14 @@ define(function(require){
 
         function update() {
             timeNow = Date.now();
-            var dt = timeNow - lastUpdateTime;
+            var dt = (timeNow - lastUpdateTime) / 1000;
             lastUpdateTime = timeNow;
-            gameEvents.emit("update", dt / 1000, wind.getVector());
+            difficulty += 0.01 * dt;
+            gameEvents.emit("update", {
+                dt: dt,
+                windVector: wind.getVector(),
+                difficulty: difficulty
+            });
         }
 
         var stageX = 0, stageY = 0;

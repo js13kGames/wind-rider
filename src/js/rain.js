@@ -40,13 +40,13 @@ define(function(require){
     };
 
     Rain.prototype = {
-        update: function(dt, windspeed) {
+        update: function(data) {
             var rainPerSecond = 1;
             if (Math.random() > 0.3 && debug.rain) {
                 this.drops.push(new Raindrop(Math.random() * 960, -25));
             }
             for (var i = 0; i < this.drops.length; i++) {
-                this.drops[i].update(dt);
+                this.drops[i].update(data.dt);
             }
         },
         render: function(ctx) {

@@ -6,7 +6,6 @@ define(function(require) {
             gameEvents.emit('registerPhysics', this, 480, 270);
             this.speed = strength;
             this.radius = 25;
-            this.flip = false;
             bornTime = Date.now();
             gameEvents.on('update', this.update, this);
             gameEvents.on('render', this.render, this);
@@ -45,8 +44,7 @@ define(function(require) {
         ctx.fill();
     }
     Player.prototype = {
-        update: function(dt, windVector) {
-            this.flip = this.velocity.x > 0;
+        update: function() {
             var edge = {
                 top: -this.radius,
                 bottom: canvas.height + this.radius,
@@ -74,11 +72,6 @@ define(function(require) {
         render: function(context) {
             context.save();
             context.translate(this.position.x, this.position.y);
-            if (this.flip) {
-                context.scale(1, 1);
-            } else {
-                context.scale(-1, 1);
-            }
             drawBody(context, 0, 0, this.radius);
             drawWing(context, -7, -25, Math.PI, 0.15);
             drawWing(context, -5, -25, Math.PI + Math.PI / 5 , 0.15);

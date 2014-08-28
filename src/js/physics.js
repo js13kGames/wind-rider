@@ -35,10 +35,10 @@ define(function(require) {
                 this.colliders.splice(index, 1);
             }
         },
-        update: function(dt, windVector) {
+        update: function(data) {
             this.updateColliders();
             for (var i = 0; i < this.physicsObjects.length; i++) {
-                this.updatePhysics(this.physicsObjects[i], windVector);
+                this.updatePhysics(this.physicsObjects[i], data.windVector);
             }
         },
         updatePhysics: function(object, windVector) {

@@ -10,14 +10,16 @@ define(function(require) {
             gameEvents.on('render', this.render, this);
         };
     Wind.prototype = {
-        update: function(dt) {
-            xChange = (1 - Math.random() * 2);
-            yChange = (1 - Math.random() * 2);
+        update: function(data) {
+            var changeScale = Math.min(data.difficulty, 1);
+            xChange = (changeScale - Math.random() * (changeScale * 2));
+            yChange = (changeScale - Math.random() * (changeScale * 2));
             this.windVector.add(new Vector(xChange, yChange));
-            this.windVector.limit(10);
+            this.windVector.limit(data.difficulty);
             this.speed = this.windVector.mag();
             this.xScale = this.speed / 10;
             this.angle = this.windVector.getAngle();
+            console.log(this.windVector.x, this.windVector.y);
         },
         render: function(ctx) {
             ctx.font="20pt Arial";
@@ -44,7 +46,7 @@ define(function(require) {
             gameEvents.off('render', this.render, this);
         },
         getVector: function() {
-            return this.windVector;
+            return Vector.fromPolar(this.speed, this.angle);
         }
     };
     return Wind;
