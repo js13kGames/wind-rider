@@ -150,7 +150,7 @@ define(function(require){
             timeNow = Date.now();
             var dt = (timeNow - lastUpdateTime) / 1000;
             lastUpdateTime = timeNow;
-            difficulty += 0.01 * dt;
+            difficulty += 0.1 * dt;
             gameEvents.emit("update", {
                 dt: dt,
                 windVector: wind.getVector(),

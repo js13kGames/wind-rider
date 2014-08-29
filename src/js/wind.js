@@ -19,7 +19,6 @@ define(function(require) {
             this.speed = this.windVector.mag();
             this.xScale = this.speed / 10;
             this.angle = this.windVector.getAngle();
-            console.log(this.windVector.x, this.windVector.y);
         },
         render: function(ctx) {
             ctx.font="20pt Arial";

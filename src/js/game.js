@@ -4,8 +4,8 @@ define(function(require) {
     window.gameEvents = new Events();
     window.SceneManager = require('sceneManager');
     window.debug = {
-        rain: false,
-        wind: true,
+        rain: true,
+        wind: false,
         gravity: false,
         death: true
     };
