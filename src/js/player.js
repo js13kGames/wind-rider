@@ -7,9 +7,9 @@ define(function(require) {
             this.speed = strength;
             this.radius = 25;
             bornTime = Date.now();
-            gameEvents.on('update', this.update, this);
-            gameEvents.on('render', this.render, this);
-            gameEvents.on('press', this.onPress, this);
+            if (debug.player) gameEvents.on('update', this.update, this);
+            if (debug.player) gameEvents.on('render', this.render, this);
+            if (debug.player) gameEvents.on('press', this.onPress, this);
         };
     function drawWing(ctx, xoff, yoff, rotation, scale) {
         ctx.save();

@@ -7,7 +7,8 @@ define(function(require) {
         rain: true,
         wind: false,
         gravity: false,
-        death: true
+        death: true,
+        player: false
     };
     SceneManager.loadScene('intro');
 });

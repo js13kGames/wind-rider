@@ -58,7 +58,7 @@ define(function(require) {
                 colliderFront.add(collider.position);
                 var distance = Vector.dist(colliderFront, this.player.position);
                 if (distance < this.player.radius) {
-                    this.player.acceleration.add(collider.velocity.scale(0.1));
+                    this.player.acceleration.add(collider.velocity.scale(0.01));
                     gameEvents.emit('destroy', collider);
                 }
             }
