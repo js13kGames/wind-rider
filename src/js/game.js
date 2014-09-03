@@ -2,13 +2,11 @@ define(function(require) {
     var Events = require('minivents.min');
 
     window.gameEvents = new Events();
-    window.SceneManager = require('sceneManager');
     window.debug = {
-        rain: true,
-        wind: false,
-        gravity: false,
+        wind: true,
         death: true,
-        player: false
+        player: true
     };
-    SceneManager.loadScene('intro');
+    window.SceneManager = require('sceneManager');
+    var gameScene = new SceneManager();
 });

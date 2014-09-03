@@ -10,108 +10,36 @@ define(function(require){
     clickListener = function(event) {
         // debugger
         var contentDiv = document.getElementById('content');
-        stageX = Math.round((event.pageX - contentDiv.offsetLeft - contentDiv.clientLeft) * scale);
-        stageY = Math.round((event.pageY - contentDiv.offsetTop - contentDiv.clientTop) * scale);
+        var stageX = Math.round((event.pageX - contentDiv.offsetLeft - contentDiv.clientLeft) * scale);
+        var stageY = Math.round((event.pageY - contentDiv.offsetTop - contentDiv.clientTop) * scale);
         gameEvents.emit('press', new Vector(stageX, stageY));
     },
-    keyListener = null,
-    scene = null,
-    strength = 5;
+    paused = false,
+    keyListener = function(event) {
+        if (event.which === 27) {
+            paused = !paused;
+        }
+    },
+    Physics = require('physics'),
+    Player = require('player'),
+    Wind = require('wind');
 
     window.canvas = document.getElementById('gameCanvas');
     window.context = canvas.getContext('2d');
     canvas.addEventListener('mousedown', clickListener);
     canvas.addEventListener('touchstart', clickListener);
+    document.addEventListener('keydown', keyListener);
 
-    function loadScene(type, time) {
-        canvas.width = canvas.width;
-        document.removeEventListener('keydown', keyListener);
-        gameEvents.off();
-        switch (type) {
-            case 'game':
-                scene = new GameScene();
-                break;
-            case 'intro':
-                scene = new IntroScene();
-                break;
-            case 'gameover':
-                scene = new GameOverScene(time);
-                break;
-        }
-        document.addEventListener('keydown', keyListener);
-        window.scene = scene;
-    }
-    function checkStart(press) {
-        if (press.x >= 645 && press.x <= 910 && press.y >= 480 && press.y <= 510) {
-            loadScene('game');
-        }
-    }
-
-    function IntroScene() {
-        context.fillStyle = "#fa3da8";
-        context.arc(480, 270, 25, 0, 2 * Math.PI, false);
-        context.fill();
-        context.save();
-        context.rotate(Math.random() * Math.PI / 20);
-        context.font = "72px Courier New, Courier";
-        context.fillStyle = "#fff";
-        context.textAlign = 'left';
-        context.textBaseLine = 'top';
-        context.fillText("Bee's journey", 50, 100);
-        context.restore();
-        context.fillStyle = "#555";
-        context.fillRect(645, 480, 265, 30);
-        context.fillStyle = "#fff";
-        context.font = "20px Courier New, Courier";
-        context.textAlign = 'right';
-        context.textBaseLine = 'bottom';
-        context.fillText("Tap here to get home", 900, 500);
-        gameEvents.on('press', checkStart);
-    }
-
-    function GameOverScene(time) {
-        context.fillStyle = "#fa3da8";
-        context.arc(480, 270, 25, 0, 2 * Math.PI, false);
-        context.fill();
-        context.save();
-        context.translate(480, 270);
-        context.rotate((Math.random() * 2 - 1) * Math.PI / 20);
-        context.font = "72px Courier New, Courier";
-        context.fillStyle = "#fff";
-        context.textAlign = 'center';
-        context.textBaseLine = 'middle';
-        context.fillText("Game over", 0, 0);
-        context.restore();
-        context.fillStyle = "#000000";
-        context.font = "20px Courier New, Courier";
-        context.fillText("You lasted " + time + " second" + (time > 1 ? "s" : "") + ".", 480, 320);
-        context.fillStyle = "#555";
-        context.fillRect(645, 480, 265, 30);
-        context.fillStyle = "#fff";
-        context.font = "20px Courier New, Courier";
-        context.textAlign = 'right';
-        context.textBaseLine = 'bottom';
-        context.fillText("Tap here to get home", 900, 500);
-        gameEvents.on('press', checkStart);
-    }
     function GameScene() {
-        var physics = new (require('physics'))(),
-            player = new (require('player'))(strength),
-            difficulty = 0,
-            wind = new (require('wind'))(difficulty),
-            rain = new (require('rain'))(difficulty),
+        var physics = new Physics(),
+            player = new Player(),
+            wind = new Wind(),
             timeNow = Date.now(),
             lastUpdateTime = Date.now(),
-            paused = false,
-            gameOver = false,
-            Repeller = require('repeller');
+            difficulty = 0,
+            gameOver = false;
 
         gameEvents.on('gameover', endGame);
-        gameEvents.on('press', createRepeller);
-
-        function createRepeller(press) {
-            new Repeller(press, strength);
-        }
 
         function endGame() {
             gameOver = true;
@@ -142,7 +70,6 @@ define(function(require){
                 wind.destroy();
                 player = null;
                 wind = null;
-                loadScene('gameover', lifeSpan);
             }
         }
 
@@ -158,8 +85,6 @@ define(function(require){
             });
         }
 
-        var stageX = 0, stageY = 0;
-
         function render() {
             canvas.width = canvas.width;
             gameEvents.emit("render", context);
@@ -173,15 +98,8 @@ define(function(require){
             imageData.data[index+3] = a;
         }
 
-        keyListener = function(event) {
-            if (event.which === 27) {
-                paused = !paused;
-            }
-        };
-
         animLoop();
     }
-    return {
-        loadScene: loadScene
-    };
+
+    return GameScene;
 });

@@ -45,7 +45,7 @@ define(function(require) {
             gameEvents.off('render', this.render, this);
         },
         getVector: function() {
-            return Vector.fromPolar(this.speed, this.angle);
+            return new Vector(-10, 0);// Vector.fromPolar(this.speed, this.angle);
         }
     };
     return Wind;
