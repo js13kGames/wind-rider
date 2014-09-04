@@ -33,7 +33,6 @@ define(function(require) {
             if (debug.wind) object.acceleration.add(wind);
             object.velocity.add(object.acceleration);
             object.acceleration = new Vector(0, 0);
-            object.velocity.limit(15);
             object.position.add(object.velocity);
             object.velocity.scale(friction);
         },

@@ -11,41 +11,23 @@ define(function(require) {
         };
     Wind.prototype = {
         update: function(data) {
-            var changeScale = Math.min(data.difficulty, 1);
-            xChange = (changeScale - Math.random() * (changeScale * 2));
-            yChange = (changeScale - Math.random() * (changeScale * 2));
-            this.windVector.add(new Vector(xChange, yChange));
-            this.windVector.limit(data.difficulty);
-            this.speed = this.windVector.mag();
-            this.xScale = this.speed / 10;
-            this.angle = this.windVector.getAngle();
+            this.speed += ((Math.random() * 2) - 1);
+            this.speed = Math.max(this.speed, 0);
+            this.speed = Math.min(this.speed, data.difficulty);
+            this.mph = Math.round(this.speed);
         },
         render: function(ctx) {
-            ctx.font="20pt Arial";
-            ctx.fillStyle="#000000";
-            ctx.fillText(Math.round(this.speed), 840, 50);
-            ctx.save();
-            ctx.translate(840, 50);
-            ctx.rotate(this.angle);
-            ctx.fillStyle="#ff0000";
-            ctx.beginPath();
-            ctx.moveTo(0, -this.size / 2);
-            ctx.lineTo(this.size * this.xScale, -this.size / 2);
-            ctx.lineTo(this.size * this.xScale, -this.size);
-            ctx.lineTo(this.size * 2 * this.xScale, 0);
-            ctx.lineTo(this.size * this.xScale, this.size);
-            ctx.lineTo(this.size * this.xScale, this.size/2);
-            ctx.lineTo(0, this.size/2);
-            ctx.closePath();
-            ctx.fill();
-            ctx.restore();
+            context.font = "50px CourierNew, Courier, sans-serif";
+            context.textAlign = "right";
+            context.fillStyle = "#000000";
+            ctx.fillText(this.mph + " MPH winds", 950, 50);
         },
         destroy: function() {
             gameEvents.off('update', this.update, this);
             gameEvents.off('render', this.render, this);
         },
         getVector: function() {
-            return new Vector(-10, 0);// Vector.fromPolar(this.speed, this.angle);
+            return new Vector(-this.speed, 0);;
         }
     };
     return Wind;
