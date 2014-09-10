@@ -50,6 +50,9 @@ define(function(require) {
         },
         getScaled: function(scalar) {
             return new Vector(this.x * scalar, this.y * scalar);
+        },
+        clone: function() {
+            return new Vector(this.x, this.y);
         }
     };
     Vector.fromPolar = function(radius, angle) {
