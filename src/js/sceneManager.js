@@ -7,7 +7,7 @@ define(function(require){
                 window.setTimeout(callback, 1000 / 60);
             };
     })(),
-    clickListener = function(event) {
+    touchListener = function(event) {
         // debugger
         var contentDiv = document.getElementById('content');
         var stageX = Math.round((event.pageX - contentDiv.offsetLeft - contentDiv.clientLeft) * scale);
@@ -19,6 +19,7 @@ define(function(require){
         if (event.which === 27) {
             paused = !paused;
         }
+        gameEvents.emit('keyup', event.which);
     },
     Physics = require('physics'),
     Player = require('player'),
@@ -26,9 +27,8 @@ define(function(require){
 
     window.canvas = document.getElementById('gameCanvas');
     window.context = canvas.getContext('2d');
-    canvas.addEventListener('mousedown', clickListener);
-    canvas.addEventListener('touchstart', clickListener);
-    document.addEventListener('keydown', keyListener);
+    canvas.addEventListener('touchstart', touchListener);
+    document.addEventListener('keyup', keyListener);
 
     function GameScene() {
         var physics = new Physics(),

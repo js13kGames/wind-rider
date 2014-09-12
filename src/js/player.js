@@ -5,6 +5,7 @@ define(function(require) {
         Player = function() {
             gameEvents.emit('registerPhysics', this, 480, 265);
             this.radius = 25;
+            this.useRight = false;
             this.bike = new Bike(this.position.clone());
             this.averageClickTime = 0;
             this.clickTimes = [];
@@ -12,6 +13,7 @@ define(function(require) {
             if (debug.player) gameEvents.on('update', this.update, this);
             if (debug.player) gameEvents.on('render', this.render, this);
             if (debug.player) gameEvents.on('press', this.onPress, this);
+            if (debug.player) gameEvents.on('keyup', this.onKeyUp, this);
         };
     Player.prototype = {
         update: function() {
@@ -34,15 +36,33 @@ define(function(require) {
                 position: this.position,
                 velocity: this.velocity
             });
+            this.useRight = (this.bike.rotation > (Math.PI / 2) * 3 || this.bike.rotation <= Math.PI / 2);
         },
         render: function(context) {
             context.save();
+            context.font = "48px Arial";
+            if (this.useRight) {
+                context.fillStyle = '#f00';
+                context.textAlign = 'right';
+                context.fillText("Tap right!", 890, 500);
+            } else {
+                context.fillStyle = '#0f0';
+                context.textAlign = 'left';
+                context.fillText("Tap left!", 50, 500);
+            }
+
             context.translate(this.position.x, this.position.y);
-            // context.fillStyle = '#000';
-            // context.fillRect(0, 0, this.radius, this.radius);
             context.restore();
         },
         onPress: function(press) {
+            this.accelerate();
+        },
+        onKeyUp: function(key) {
+            if ((this.useRight && key === 39) || (!this.useRight && key === 37)) {
+                this.accelerate();
+            }
+        },
+        accelerate: function() {
             this.clickTime = Date.now();
             if (!this.lastClickTime) {
                 this.lastClickTime = this.clickTime;

@@ -53,6 +53,9 @@ define(function(require) {
         },
         clone: function() {
             return new Vector(this.x, this.y);
+        },
+        toString: function() {
+            return "Vector: [" + this.x + ", " + this.y + "]";
         }
     };
     Vector.fromPolar = function(radius, angle) {
