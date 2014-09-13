@@ -6,6 +6,7 @@ define(function(require) {
             this.speed = 0;
             this.size = 12;
             this.xScale = 0;
+            this.highestWind = 0;
             gameEvents.on('update', this.update, this);
             gameEvents.on('render', this.render, this);
         };
@@ -15,6 +16,9 @@ define(function(require) {
             this.speed = Math.max(this.speed, 0);
             this.speed = Math.min(this.speed, data.difficulty);
             this.mph = Math.round(this.speed);
+            if (this.highestWind < this.mph) {
+                this.highestWind = this.mph;
+            }
         },
         render: function(ctx) {
             context.font = "50px CourierNew, Courier, sans-serif";
@@ -27,7 +31,10 @@ define(function(require) {
             gameEvents.off('render', this.render, this);
         },
         getVector: function() {
-            return new Vector(-this.speed, 0);;
+            return new Vector(-this.speed, 0);
+        },
+        getHighestWindSpeed: function() {
+            return this.highestWind;
         }
     };
     return Wind;

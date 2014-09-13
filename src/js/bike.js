@@ -46,7 +46,6 @@ define(function(require) {
             this.velocity = physics.velocity;
             this.rotation += (Math.PI * 2) + degToRad(this.velocity.x);
             this.rotation = this.rotation % (Math.PI * 2);
-            console.log(radToDeg(this.rotation));
         },
         drawPedal: function(ctx, position, isRight) {
             ctx.save();
