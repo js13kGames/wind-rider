@@ -44,3 +44,13 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3a9bea', end
 
 
 }
+
+#twitBtn {
+    position:absolute;
+    top: 80%;
+    left: 27%;
+}
+
+.hidden {
+    display: none;
+}

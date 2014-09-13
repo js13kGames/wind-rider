@@ -27,7 +27,11 @@ define(function(require){
 
     window.canvas = document.getElementById('gameCanvas');
     window.context = canvas.getContext('2d');
-    canvas.addEventListener('touchstart', touchListener);
+    if ('ontouchstart' in canvas) {
+        canvas.addEventListener('touchstart', touchListener);
+    } else {
+        canvas.addEventListener('mousedown', touchListener);
+    }
     document.addEventListener('keyup', keyListener);
 
     function GameScene() {
@@ -186,6 +190,10 @@ define(function(require){
             var crash = document.getElementById('crash');
             crash.load();
             crash.play();
+        }
+
+        function toggleTwitterButton() {
+            document.getElementById('twitBtn').classList.toggle('hidden');
         }
 
         animLoop();

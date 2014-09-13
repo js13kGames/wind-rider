@@ -49,12 +49,12 @@ define(function(require) {
                 context.textAlign = 'left';
                 context.fillText("Tap left!", 50, 500);
             }
-
-            context.translate(this.position.x, this.position.y);
             context.restore();
         },
         onPress: function(press) {
-            this.accelerate();
+            if ((this.useRight && press.x > 480) || (!this.useRight && press.x <= 480)) {
+                this.accelerate();
+            }
         },
         onKeyUp: function(key) {
             if ((this.useRight && key === 39) || (!this.useRight && key === 37)) {
