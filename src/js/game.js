@@ -9,4 +9,7 @@ define(function(require) {
     };
     window.SceneManager = require('sceneManager');
     var gameScene = new SceneManager();
+    document.ontouchmove = function(event) {
+        event.preventDefault();
+    };
 });
